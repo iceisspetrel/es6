@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 LET & CONST</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			
+			//基本用法
+			(function(){
+				{
+					var a = 5;
+					const b = 9;
+					let   c = 10;
+
+					a = 15;
+					//const定义的变量为只读变量，不能重新赋值
+					//b = 19;  //Uncaught TypeError: Assignment to constant variable.
+					c = 20;    //let定义的变量为可读可写变量
+				}
+				
+				console.log('var声明的变量可以在声明代码块之外使用 ---->' + a);
+				//let 和 const定义的变量有严格的作用域限制。在声明变量代码块之外使用变量会报错
+				//console.log(b);  //Uncaught ReferenceError: b is not defined
+				//console.log(c); //Uncaught ReferenceError: c is not defined
+
+				let tmp = 1;
+
+				//Error 已经声明的变量不允许重复声明
+				//let tmp = 3; //Uncaught SyntaxError: Identifier 'tmp' has already been declared
+
+				//块级作用域
+				//可以理解为自运行函数的简写版
+				//两个大括号组成块级作用域
+				function test(){
+					console.log('i am outer');
+				}
+
+				{
+					{
+						console.log('可以任意嵌套的块级作用域');
+						console.log('块级作用域内最好不要声明变量');
+
+						test(); //使用外层定义的test
+
+						//如果此处使用let重新声明 变量提升 报错
+						var test = function(){ //重新定义test， 运行时函数声明方式  
+							console.log('i am inner');
+						}
+
+						test(); //使用重新定义的test
+					}
+				}
+				test();
+			})();
+
+			//关于变量提升
+			(function(){
+				//变量提升 以下行代码等同于 
+				{
+					var _a;
+					console.log('模拟变量提升 ---->' + _a);
+					_a = 15;
+				}
+
+				console.log(a);
+				var a = 15; 
+
+				//let 和const不存在变量提升
+				/*
+				console.log(b); //Uncaught ReferenceError: b is not defined
+				let b = 19;
+				*/
+				/*
+				console.log(c); Uncaught ReferenceError: c is not defined
+				const c = 20;
+				*/
+
+				let b;
+				console.log('未赋值的b ----> ' + b);
+
+				//声明const变量必须同时进行赋值后才能使用， 否则会报错
+				//const c; //Uncaught SyntaxError: Missing initializer in const declaration
+				const c = 15;
+				console.log('正确的const使用方法 --->' + c); 
+
+			})();
+
+			//暂时性锁区
+			//锁区和变量提升有类似之处
+			(function(){
+
+				var tmp = 15;
+				{
+					//代码块中使用了let声明变量， 那么此作用域中的所有使用的此变量都绑定绑定在此作用域内
+					//不受全局变量或者外部变量影响
+					//console.log('锁区--->' + tmp); //Uncaught ReferenceError: tmp is not defined
+					let tmp = 10;
+				}
+				/*
+				//错误写法， 形参x的默认值为y，但是此时y还没有声明，所以会报错
+				function sum(x = y, y = 2){ //let_const.html:71 Uncaught ReferenceError: y is not defined
+					return x + y; 
+				}
+				*/
+				//正确写法
+				function sum(x = 2, y = x - 1){
+					return x + y;
+				}
+
+				console.log('求sum ---> ' + sum());
+
+			})();
+
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>

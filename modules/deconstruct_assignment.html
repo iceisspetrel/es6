@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 解构赋值</title>
+		<script type="text/javascript">
+			
+			//基本用法
+			(function(){
+
+				let obj = {
+				    "name": {
+				        "en": "zhangsan",
+				        "zh": "张三",
+				        "other": {
+				            "first": {
+				                "name": "zzzzsan"
+				            },
+				            "second": [
+				                "zsan",
+				                "zzsan",
+				                {
+				                    "name": "zzzzzsan"
+				                }
+				            ]
+				        }
+				    }
+				};
+
+
+				//以模式匹配的方式赋值
+				var {
+						name : {
+							en : en, 
+							other : {
+								first : {name : fname}, 
+								second : [, name2, {
+									name : name4
+								}]
+							}
+						}
+					} = obj;
+
+				//赋值结果
+				console.log(en);
+				console.log(fname);
+				console.log(name2),
+				console.log(name4);
+			})();
+
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
