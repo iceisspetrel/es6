@@ -7,6 +7,50 @@
 			//基本用法
 			(function(){
 
+				//对象解构赋值
+				let {p1, p2} = {p1 : 15, p2 : 22};//严格匹配， 赋值变量名和对象某个属性名相同
+ 
+				//不严格匹配， 将对象某个属性名的值赋值给另一个变量
+				//例子: 将obj.p1赋值给p3, 将obj.p2赋值给p4
+				let {p1 : p3, p2 : p4} = {p1 : 15, p2 : 22};
+
+				console.log(p1);
+				console.log(p2);
+				console.log(p3);
+				console.log(p4);
+
+				//数组的解构与赋值
+				let [x, y] = [1, 2];
+				console.log('数组解构x ---> ' + x);
+				console.log('数组解构y ---> ' + y);
+
+				//数组中加强型写法解构 返回对应部分的数组
+				//加强型方法： 取剩余部分 常见于函数形参、数组解构赋值
+				let [x1, ,...y1] = [1, 2, 3];
+				console.log('数组解构x1 ---> ' + x1);
+				console.log('数组解构y1 ---> ' + y1);
+				console.log('y1类型 ---> ' + Object.prototype.toString.call(y1));
+
+				//字符串的解构赋值
+				//字符串的解构赋值和数组的类似
+				//原理：var str = new String('hello')
+				//      str ----> String {0: "h", 1: "e", 2: "l", 3: "l", 4: "o", length: 5, [[PrimitiveValue]]: "hello"} 
+				let str = 'hello';
+				let [s, ...arg] = str;
+				console.log('字符串解构赋值---> ' + s);
+				console.log('字符串解构赋值---> ' + arg);
+
+				//数值、布尔值的解构赋值
+				let {valueOf : blooen} = true;
+				console.log(Boolean.prototype.valueOf === blooen);
+
+				let {toString : num} = 123;
+				console.log(Number.prototype.toString === num);
+
+				var warn = "字符串、布尔值以及数值解构赋值的步骤：\n" + 
+						   "  1、类似java包装集的概念，先将匹配对象转换为对象， 比如说字符串:str = new String(str)\n" + 	
+						   "  2、使用包装集对象包装以后的对象进行模式匹配";
+
 				let obj = {
 				    "name": {
 				        "en": "zhangsan",
@@ -45,11 +89,37 @@
 				console.log(fname);
 				console.log(name2),
 				console.log(name4);
+
+
+				//函数解构
+				function add([x=1, y=5] = []){
+					return x + y;
+				}
+
+				console.log('函数解构 ---> ' + add([1, 2]));
+				console.log('函数形参解构赋值以及默认值 --- >' + add());
+
+				//两个形参，默认值为1， 1
+				function test({x, y} = {x : 1, y : 1}){
+					return [x, y]
+				}
+				console.log(test());
+				console.log(test({x:5, y:6}));
+
+				var m = ({x, y} = {x : 9, y : 9}) => {
+					console.log([x, y]);
+				};
+
+				m();
+
+				m({x : 15, y : 20});
+
+
 			})();
 
 		</script>
 	</head>
 	<body>
-		
+		<h1 style="color: red">解构赋值时不要使用圆括号</h1>
 	</body>
 </html>
