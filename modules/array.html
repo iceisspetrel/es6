@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 ARRAY</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			((global) => {
+				//Array.from
+				//将类似数组解构的数据转换为数组
+				var obj = {
+					'0' : 'a',
+					'1' : 'b',
+					'2' : 'c',
+					'length' : '3'
+				}
+
+				Array.prototype.toString = function(){
+					return '[' + this.join(',') + ']';
+				}
+
+				var arr = Array.from(obj)
+				console.log('obj to array ---> ' + arr);
+
+				console.log('string to array ---> ' + Array.from('hello'));
+
+				var set = new Set();
+				set.add('hello');
+				set.add({
+					name : 'zhangsan'
+				});
+				set.add(function(){});
+				set.add([1,23]);
+
+				console.log('set to array ---->' + Array.from(set));
+
+
+				//Array.of
+				//将入参转换为数组
+				console.log('Array.of(1, 2, 3) ----> ' + Array.of(1, 2, 3));
+
+				//Array.copyWithin
+
+
+				//Array.prototype.find
+				var ay = [1, 2, {name : 'zs'}];
+				var item = ay.find((item) => {
+					return item.name == 'zs';
+				});
+				console.log('find item ----> ' + JSON.stringify(item));
+
+				//Array.prototype.findIndex 
+				console.log('findIndex --->' + [1, 2, 15, 9].findIndex((item) => {
+					return item > 9;
+				}));
+
+
+				//Array.prototype.fill(value, start = 0, end = Array.length);
+				//使用入参填充数组
+				//从start号位开始到end号位结束
+				var ay1 = [1, 2, 3, 4];
+				ay1.fill({name : 'zs'}); 
+				console.log('fill 值传入一个参数 --->' + ay1);
+
+				ay1 = [1, 2, 3, 4];
+				ay1.fill(7, 1);
+				console.log('fill 传入两个参数 -----> ' + ay1);
+
+				ay1 = [1, 2, 3, 4];
+				ay1.fill(7, 1, 4);
+				console.log('fill 传入三个参数 -----> ' + ay1);
+
+				ay1 = [1, 2, 3, 4];
+				console.log('ay1.includes(2) -->' + ay1.includes(2));
+				console.log('ay1.includes(2, -1) -->' + ay1.includes(2, -1));
+			})(this);
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
