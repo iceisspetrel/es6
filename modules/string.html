@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 STRING</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			(() => {
+				let str = "hello";
+
+				//includs可以替代indexOf使用，判断str是否包含某字符串
+				//return boolean
+				console.log(str.includes('ll'));
+				console.log(str.includes('le'));
+
+				//判断str是否以某个字符串开头
+				//return boolean
+				console.log(str.startsWith('h'));
+				console.log(str.startsWith('e'));
+
+				//判断str是否以某个字符串结尾
+				//return boolean
+				console.log(str.endsWith('lo'));
+				console.log(str.endsWith('le'));
+
+				console.log(str.repeat(5));
+
+				//console.log(str.padStart(10, 'ab')); //浏览器暂不支持 Uncaught TypeError: str.padStart is not a function
+
+				//console.log(str.padEnd(10, 'ab')); //浏览器暂不支持 Uncaught TypeError: str.padEnd is not a function
+
+				var obj = {
+					name : 'zhangsan'
+				}
+
+				//模板字符串
+				//模板字符串会保留换行
+				//${str} 可以嵌入已声明的变量 或者对象属性路径
+				var template = `
+					hel
+					hi
+					${obj.name}
+
+					ffff
+				`;
+				console.log(template);	
+			})();
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
