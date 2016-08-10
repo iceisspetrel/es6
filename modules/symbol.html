@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 SYMBOL</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			((global) => {
+				console.log(global);
+
+				var key  = Symbol('key'),
+					key1 = Symbol('key');
+
+				console.log(key === key1);
+				console.log('Symbol 产生一个独一无二的数据， 即便是入参key值相同，生成的Symbol实例也是不同的数据。地址不同');
+
+				console.log('Symbol实例的类型--->' + typeof key);
+				console.log('Symbol的严格类型--->' + ({}).__proto__.toString.call(key));
+
+				console.log('Symbol实例的 Symbol("key").toString() ----> ' + key.toString());
+
+				try{
+					console.log(key + 1);
+				} catch(e){
+					console.error(e + '. Symbol不能与其他类型数据做运算,会报类型错误 #<Symbol>');
+				}
+
+				console.log('Symbol实例可以转换为字符串 ----> ' + String(key));
+				console.log('Symbol实例可以转换为布尔对象 --> ' + new Boolean(key).valueOf());
+
+				//Symbol对象定义对象属性时必须放在方括号内
+				var sy = Symbol('sy');
+				var obj = {
+					[key] : 5,
+					[sy](...arg){
+						this[key1](...arg);
+					}
+				};
+				obj[key1] = function(){
+					console.log(15);
+				};
+
+				obj.key1 = 20;
+
+				console.log(obj);
+
+				console.log(Object.getOwnPropertySymbols(obj));
+
+				//使用Symbol定义常量
+				const STATIC_DATA_ADD = Symbol('add'),
+					  STATIC_DATA_DEL = Symbol('del'),
+					  STATIC_DATA_MOD = Symbol('mod'),
+					  STATIC_DATA_GET = Symbol('get');
+
+			  	var obj3 = {
+					max : 15
+				};
+				obj3[Symbol('num')] = 40;
+
+				console.log('获取普通属性 ---> ' + Object.getOwnPropertyNames(obj3));
+
+				//查找已经声明的Symbol变量
+				//Symbol.for 登记机制，已经登记则返回已登记的Symbol对象，没有则创建一个
+				var str = 'exist';
+				var sy1 = Symbol.for(str),
+					sy2 = Symbol.for(str);
+
+				console.log(sy1 === sy2);
+
+				//查找某个Symbol对象的描述
+				console.log(Symbol.keyFor(sy1));
+			})(this);
+		</script>
+	</head>
+	<body>
+
+	</body>
+</html>
