@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 FUNCTION</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			((global) => {
+				
+				//函数入参的解构与赋值
+				var test = function({x : foo, y : bar} = {x : 5, y : 6}){
+					return {foo, bar};
+				}
+				console.log(test());
+
+				console.log(test({x : 15, y : 22}));
+
+				var test1 = function([foo, bar] = [1, 2]){
+					return {foo, bar};
+				}
+				console.log(test1());
+
+				var test2 = function([foo, ...arg] = [1, 2, 3, 4]){
+					return {foo, arg};
+				}
+				console.log(test2());
+				console.log(test2([1, 2, 3, 4, 5, 6]));
+
+				console.log('test的参数个数--->' + test.length);
+				console.log('test1的参数个数--->' + test1.length);
+				console.log('test2的参数个数--->' + test2.length);
+
+				console.log('一个函数的入参设定默认值后， fn.length方法不能正确获取到形参个数');
+
+
+				//rest参数 ...
+				//表示参数不定， 通过...后的变量接收所有的剩余参数放入一个数组
+				function push(arr, ...arg){
+					console.log(arg);
+				}
+
+				//扩展运算符 ...  将...后的数组展开
+				function push1(arr, ...arg){
+					arr.push(...arg);
+					console.log('hahah' + arg.length + '   ' + arg);
+					console.log(arr);
+				}
+
+				push([], 1, 2, 3, 4);
+
+				push1([], ...[1, 2, 3]);
+
+				//扩展运算符的应用场景
+
+
+				//1、替代apply的第二个参数
+				function max(x, y, z){}
+
+				max.apply(this, [1, 2, 3]);
+
+				max(...[1, 2, 3]);
+
+				//2、合并数组
+				var arr1 = [1, 2, 3], arr2 = [5, 6];
+				console.log('es5 合并方法 ----> ' + arr1.concat(arr2));
+
+				console.log('es6 合并方法 ---> ' + [...arr1, ...arr2] );
+
+				//3、解构赋值
+
+
+
+				//箭头函数
+				var a = (x, ...arg) => {
+					console.log(arg);
+				};
+
+				a();
+			})(this);
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
