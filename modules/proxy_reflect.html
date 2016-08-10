@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 Proxy & Reflect</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			((global) => {
+
+				var proxy = new Proxy({}, {
+					get : function(target, prop, reciver){
+						console.log('override get');
+						return Reflect.get(target, prop, reciver);
+					},
+
+					set : function(target, prop, value, reciver){
+						console.log('override set');
+						return Reflect.set(target, prop, value, reciver);
+					},
+
+					has : function(target, prop){
+						console.log('override has');
+						return Reflect.has(target, prop);
+					},
+
+					deleteProperty : function(target, prop){
+						console.log('override delete');
+						return Reflect.deleteProperty(target, prop);
+					},
+
+					ownKeys : function(target){
+
+					}
+				});
+
+				proxy.name = "China";
+				console.log(window.proxy = proxy);
+
+				var readonly = new Proxy({}, {set : function(target, prop, value){
+
+				}});
+
+				Object.defineProperty(Object, 'readonly', {
+					enumerable : false,
+					value : function(target){
+						var result = Object.create(readonly);
+					}
+				})
+			})(this);
+		</script>
+	</head>
+	<body>
+		<h1>
+			Reflect对象时Proxy的基础，Proxy实例中能重写覆盖的方法都能在Reflect中找到。相当于说Reflect是基类，Object操作的底层实现。Proxy重写了的方法都可以通过Reflect的相应方法执行默认操作。
+		</h1>
+	</body>
+</html>
