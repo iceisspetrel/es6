@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 OBJECT</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			((global) => {
+				
+				//1、属性简写 对象的简介表达式
+				var foo = "1", bar = '2', done = function(){}
+				console.log({foo, bar, done});//类似解构赋值的反运算
+
+				var obj2 = {
+					done (){
+						alert(1);
+					},
+					_name : 'zhangsan',
+					get name(){
+						return this._name;
+					},
+					set name(name){
+						this._name = name;
+					}
+				}
+
+				Object.defineProperty(obj2, 'age', {
+					writable : false,
+					configurable : false,
+					value : 80,
+					enumerable : false
+				});
+
+				console.log(obj2);
+				
+				//属性名表达式
+				var prop = 'name';
+				var obj3 = {[prop] : 'zhangsan'};
+
+
+				//2、Object.is
+				//Object.is 与 === 基本一致
+				//不同点 +0 != -0, NaN == NaN
+				var obj1 = {}, obj2 = obj1;
+				Object.is(obj1, obj2); //true
+				Object.is(+0, -0); //false
+				Object.is(NaN, NaN); // true
+
+				obj1 === obj2; //true
+				+0 === -0; //true
+				NaN === NaN; //false 
+
+				Object.defineProperty(Object, 'equal', {
+
+					enumerable : false,
+
+					value : function(...arg){
+
+						if(arg.length !== 2){
+							throw new Error('Object.equal need tow argument #<Object>');
+						}
+
+						if(arg[0] === +0 || arg[0] === -0 || arg[0] === 0){
+							arg[0] = 0;
+						}
+
+						if(arg[1] === +0 || arg[1] === -0 || arg[1] === 0){
+							arg[1] = 0;
+						}
+
+						return this.is(...arg);
+					}
+				});
+
+				Object.equal(+0, -0);
+
+				Object.defineProperty(Object.prototype, 'equal', {
+					enumerable : false,
+					value : function(...arg){
+						if(arg.length !== 1){
+							throw new Error('Object.equal need tow argument #<Object>');
+						}
+						return this.constructor.is(this, ...arg);
+					}
+				});
+
+
+				//定义属性描述 
+				//writable     是否可以任意赋值
+				//configurable 是否可以改变、删除
+				//enumerable   是否可以枚举
+				//value        默认值
+				//get          读
+				//set          写
+
+				// for...in       遍历对象自身以及继承而来的可枚举属性
+				// Object.keys    获取对象自身的可枚举属性
+				// JSON.stringify 串行化对象自身可枚举属性 
+
+				//Object.getOwnPropertyDescriptor 获取对象的某个属性描述
+				var descriptor = Object.getOwnPropertyDescriptor(Math, 'random');
+				console.log(descriptor);
+				
+
+				//Object.setPrototypeOf(obj, proto)   设置一个对象的__proto__
+				//Object.getPrototypeOf               获取一个对象的__proto__
+
+				var proObj = new Object();
+
+				Object.getPrototypeOf(proObj) === Object.prototype;
+
+				var setObj = Object.setPrototypeOf({}, {
+					say : function(){
+						console.log('i am setPrototypeOf');
+					}
+				});
+
+				setObj.say();	
+
+				Object.defineProperty(Object, 'values', {
+					enumerable : false,
+					value : function(target){
+						if(this.prototype.toString.call(target) !== '[object Object]'){
+							throw new TypeError('argument should be an object');
+						}
+
+						var keys = this.keys(target), values = [];
+						for(var i=0; i<keys.length; i++){
+							values.push(target[keys[i]]);
+						}
+
+						return values;
+					}
+				});
+			})(this);
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
