@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 Collection</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			((global) => {
+
+				//1、 Set.prototype.add    添加元素
+				//2、 Set.prototype.delete 删除元素
+				//3、 Set.prototype.has    是否包含元素
+				//4、 Set.prototype.clear  清空set
+				//5、 new Set().size       长度
+				
+				//set接收一个部署了Symbol.iterator方法的对象作为入参
+				//比如Array, Set、 Map
+				var set1  = new Set([1, 2, 3]);
+				var set2  = new Set(set1);
+
+				//也可以是一个通过手动部署iterator的对象
+				
+				/**
+				 * [description] 为Object对象部署Symbol.iterator
+				 * 1、迭代器迭代的是该对象的keys
+				 * 2、next迭代返回的固定解构为 {value : '', done : Boolean}
+				 * @return {[type]} [description]
+				 */
+				Object.prototype[Symbol.iterator] = function(){
+					let keys = this.constructor.keys(this),
+						index = 0;
+					return {
+						next : () => {
+							return index < keys.length ? {
+								value : {
+									prop  : keys[index],
+									value : this[keys[index++]]
+								},
+								done  : false
+							} : {
+								done  : true
+							}
+						}
+					}
+				}
+
+				var obj = {name : 'zs', age : 'ls', um : '123'};
+				obj.constructor.defineProperty(obj, 'am', {
+					enumerable : false,
+					value : 'am'
+				});
+
+				var objSet = new Set(obj);
+				console.log(objSet);
+
+				//set添加实例的方法为add
+				objSet.add(15);
+				console.log(objSet);
+
+				//set删除元素 delete  返回操作结果 true or false
+				objSet.delete(15);
+				console.log(objSet);
+
+				//获取set的元素个数
+				console.log(objSet.size);
+
+				objSet.add(15);
+
+				//判断一个set 是否包含某个元素
+				console.log(objSet.has(15));
+
+				var item = {
+					name : 'object'
+				};
+				objSet.add(item);
+ 				console.log('是否包含对象--->' + objSet.has(item));
+
+				//通过set 数组去重
+				var arr1 = [1, 2, 1, 3, 5, 4, 2, 5, 1];
+				arr1 = new Array(...new Set(arr1))
+				console.log(arr1);
+
+				//WeakSet 
+				//1、WeakSet的元素只能是对象
+				//2、不能被循环遍历
+				var ws = new WeakSet();
+				try{
+					ws.add(1);
+				} catch(e){
+					console.error('WeakSet的元素只能是对象 ---> ' + e);
+				}
+				ws.add({name : 'zs'});
+				console.log(ws);
+
+				try{
+					for(let item of ws){
+
+					}
+				} catch(e){
+					console.error('WeakSet不能被循环遍历 ---->' + e);
+				}
+
+				for(let item of objSet){
+					console.log('Set对象循环遍历 --->' + JSON.stringify(item));
+				}
+
+
+				//Map
+				// Map.prototype.set(key, value)
+				//  Map.prototype.get(key)
+				//  Map.prototype.has(key)
+				//  Map.prototype.clear
+				//  new Map().size
+				//  
+				var map1 = new Map(), key = Symbol.for('key');
+				map1.set(key, 'hello');
+				console.log(map1);
+				console.log(map1.get(key));
+
+
+				var map2 = new Map([['name' , {}], ['age' , function(){}]]);
+				console.log(map2);
+
+				console.log(map2.has('name'));
+				map2.set('lala', 15);
+				console.log('删除属性lala前');
+				console.log(map2.size);
+				console.log(map2.has('lala'));
+
+				map2.delete('lala');
+				console.log('删除属性lala后');
+				console.log(map2.size);
+				console.log(map2.has('lala'));
+
+				console.log(map2.get('lala'));
+
+				map2.clear();
+				console.log(map2);
+
+				//WeakMap
+				//WeakMap只接受 Object作为key
+				//WeakMap只有 get set delete has四种方法
+			})(this);
+		</script>
+	</head>
+	<body>
+
+	</body>
+</html>
