@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 ITERATOR</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			((global) => {
+					
+				//迭代器 Symbol.iterator
+				//手动部署
+				/**
+				 * [description] 为Object对象部署Symbol.iterator
+				 * 1、迭代器迭代的是该对象的keys
+				 * 2、next迭代返回的固定解构为 {value : '', done : Boolean}
+				 * @return {[type]} [description]
+				 */
+				Object.prototype[Symbol.iterator] = function(){
+					let keys = this.constructor.keys(this),
+						index = 0;
+					return {
+						next : () => {
+							return index < keys.length ? {
+								value : {
+									prop  : keys[index],
+									value : this[keys[index++]]
+								},
+								done  : false
+							} : {
+								done  : true
+							}
+						}
+					}
+				}
+
+			})(this);
+		</script>
+	</head>
+	<body>
+
+	</body>
+</html>
