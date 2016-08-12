@@ -1,0 +1,243 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 Generator</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			((global) => {
+
+				//Generator 函数 在function标记后紧跟* 
+				//函数体内 yield标记一个指针位置， 执行到yield处就暂停执行
+				//通过next回复执行 next()返回的结果集解构与 [Symbol.iterator]().next() 一致
+				
+				function* generator(){
+					yield '1';
+					yield '2';
+					yield '3';
+
+					return '4';
+				}
+
+				var gen = generator();
+
+				console.log(window.gen = gen);
+				
+				console.log(gen.next()); //{value: "1", done: false}
+				console.log(gen.next()); //{value: "2", done: false}
+				console.log(gen.next()); //{value: "3", done: false}
+				console.log(gen.next()); //{value: "4", done: true}
+				console.log(gen.next()); //{value: undefined, done: true} 	
+
+				function* arrayIterator(){
+					yield 1;
+					yield 2;
+					yield 3;
+					yield 4;
+					yield 5;
+
+					return 6;
+				}
+				/**
+				 * [at description] Generator函数返回的是一个部署了Symbol.iterator的实例
+				 * 					指针到return 处标记的结果为{value : 'xxx', done : true}
+				 * 					for...of循环运行到done为true时即跳出循环
+				 * 					所以arrayIterator在循环的时候只打印了前5个值， return后的值没有打印出来
+				 * @type {[type]}
+				 */
+				var at = arrayIterator();
+				for(let item of at){
+					console.log(item);
+				}
+				//resutl : 1, 2, 3, 4, 5
+				//
+				
+				//由于gen返回的是一个可遍历的对象，可以用Generator做对象的遍历
+				var objectIterator = function* (arg){
+					var keys = Object.keys(arg);//Object.getOwnPropertyNames(arg);
+					for(let key of keys){
+						yield {key : key, value : arg[key]};
+					}
+					return;
+				}
+
+				var obj = window.obj = {
+					name : '大头儿子',
+					father : '小头爸爸',
+					mather : '围裙妈妈',
+					neighbor : '王叔叔',
+					secret : Symbol.for('secret')
+				};
+
+				obj[obj.secret] = function(){
+					return this.name + '的真老爸是' + this.neighbor;
+				}
+
+				var iterator = objectIterator(obj);
+				for(let item of iterator){
+					console.log(item);
+				}
+
+				//Generator闭包
+				function fb(arr){
+					return (function* (){
+						for(let item of arr){
+							yield item;
+						}
+						return;
+					})();
+				}
+
+				window.fb = fb;
+
+				//Generator.prototype.throw 只执行一次， 多次调用只捕获第一次抛出
+				function* throwTest(){
+					try{
+						yield 'success';
+					} catch(e){
+						console.error(e);
+					}
+				}
+
+				var tt = throwTest();
+				//tt.throw(1);
+				//tt.throw(3);
+
+				//Generator.prototype.return 终结next遍历， 入参作为返回值的value
+				var ait = arrayIterator();
+				console.log(ait.next());
+				console.log(ait.return('done'));
+
+				/**
+				 * [*finalTest description] 
+				 * 如果Generator函数中有try...finally， finally中的语句将在return之前执行
+				 * 重要： 如果通过return方法提前结束，next指针必须走入try语句或者finally语句，才会按照此规则执行
+				 * @yield {[type]} [description]
+				 */
+				function* finalTest(){
+					yield '1';
+					try{
+						yield '2';
+						yield '3';
+						return '4';
+					} finally{
+						yield '5';
+						yield '6';
+					}
+				}
+
+				var ft = finalTest();
+				console.log('------------');
+				console.log(ft.next()); //{value : '1', done : false}
+				console.log(ft.next()); //{value : '2', done : false}
+				console.log(ft.next()); //{value : '3', done : false}
+				console.log(ft.next()); //{value : '5', done : false}
+				console.log(ft.next()); //{value : '4', done : true};
+
+				console.log('------------');
+
+				var ft1 = finalTest();
+				console.log(ft1.next()); //{value : '1', done : false}
+				console.log(ft1.next());
+				console.log(ft1.return('20')); //{value : '20', done : true}
+				console.log(ft1.next());
+				console.log(ft1.next());
+
+				console.log('------------循环');
+				//finally中的语句也进入循环
+				for(let item of finalTest()){
+					console.log(item);
+				}
+
+				console.log('-------------');
+
+				function* numbers () {
+				  yield 1;
+				  try {
+				    yield 2;
+				    yield 3;
+				  } finally {
+				    yield 4;
+				    yield 5;
+				  }
+				  yield 6;
+				}
+
+				var g = numbers()
+				console.log(g.next()) // { done: false, value: 1 }
+				console.log(g.next()) // { done: false, value: 2 }
+				console.log(g.return(7)) // { done: false, value: 4 }
+				console.log(g.next()) // { done: false, value: 5 }
+				console.log(g.next()) // { done: true, value: 7 }
+
+
+				//yield*  用来执行另外一个Generator函数
+				//不执行yield*中的renturn语句
+				function* bar(){
+					try{
+						yield 'a';
+						yield 'b';
+						return 'c';
+					} finally{
+						yield 'e';
+						yield 'f';
+					}
+					
+				}
+
+				function* foo(){
+					yield 1;
+					yield 1;
+					yield* bar();
+					yield 1;
+					yield 1;
+					return 2;
+				}
+				
+				var finst = foo();
+
+				console.log('---------yield*---------');
+				console.log(finst.next());
+				console.log(finst.next());
+				console.log(finst.next());
+				console.log(finst.next());
+				console.log(finst.next());
+				console.log(finst.next());
+				console.log(finst.next());
+				console.log(finst.next());
+				console.log(finst.next());
+				//console.log(finst.return(20));
+
+				//yield*的本质：为后续值部署一个for...of循环
+				//所有部署有Symbol.iterator的对象都可以放在yield*后面
+				
+				var Test = function* (){
+					yield 'a';
+					yield* ['2', '3', '4'];
+					yield 'b';
+					return 'c';
+				}
+				console.log('yield*....');
+				for(let item of Test()){
+					console.log(item);
+				}
+
+				//Generator函数作为状态机， 可以去掉外部开关标记
+				function* Clock(){
+					for(;;){
+						yield('Tick');
+						yield('Tock');
+					}
+				}
+
+				Clock.prototype.run = function(){
+					return this.next().value
+				}
+
+				window.Clock = Clock;
+			})(this);
+		</script>
+	</head>
+	<body>
+
+	</body>
+</html>
