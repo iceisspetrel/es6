@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>ES6 PROMISE</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			((global) => {
+				var flag = true;
+
+				var promise = new Promise((resolve, reject) => {
+					setTimeout(() => {
+						if(flag){
+							resolve('done');
+						} else {
+							reject('fail');
+						}
+					}, 1000);
+				});
+
+				promise.then((resp) => {
+					console.log(resp);
+				}, (error) => {
+					console.log(error);
+				});
+
+
+				var imageLoader1 = function(src){
+					return new Promise((resolve, reject) => {
+
+						if(Object.is(src, '00')) throw new TypeError('地址错误');
+
+						var image = new Image();
+						image.src = src;
+						image.onload = function(){
+							resolve(src);
+						};
+						image.onerror = function(){
+							reject(src);
+						};
+					});
+				}
+
+				imageLoader1('http://www.w3school.com.cn/i/ct_js_domtree1.gif').then((src) => {
+					var img = document.createElement('img');
+					img.src = src;
+					img.className = 'he h2 h3';
+					document.body.appendChild(img);
+					console.log('开始渲染');	
+				}, (src) => {
+					var div = document.createElement('div');
+					div.innerHTML = '图片加载失败:' + src;
+					document.body.appendChild(div);
+				}).then(function(){
+					console.log('加载完成');
+				}).catch((...arg) => {
+					console.log(arg);
+				});
+
+				imageLoader1('http://www.w3school.com.cn/i/ct_js_domtree1.gif').then(()=>{}).catch((...msg) => {
+					console.log(msg);
+				});
+
+				//Promise.prototype.then(donecallback, errorcallback)
+				//Promise.prototype.catch(errorcallback);
+				//then和catch可以同时使用， 当then指定了errorcallback时， catch将不执行
+				//catch可以捕获then中抛出的错误
+				imageLoader1('00').then((resp) => {
+
+				}).catch((error) => {
+					console.error(error);
+				});
+
+				imageLoader1('http://www.w3school.com.cn/i/ct_js_domtree.gif').then(() => {
+					console.log('then 1');
+					throw new Error(1);
+				}).then(() => {
+					console.log('then 2');
+					throw new Error(2);
+				}).then(() => {
+					console.log('then 3');
+					throw new Error(3);
+				}).catch((...errors) => {
+					
+				});
+
+
+				//Promise.all([p1, p2, p3]) p1, p2, p3都是Promise对象， 都resolve时， all返回的promise对象才resolve
+				//有一个reject， 则整个allreject
+				//then中的donecallback将会返回各个promise对像返回值构成的数组
+				var promises = [1, 2, 3, 4].map((item, index) => {
+					return new Promise((resolve, reject) => {
+						resolve({index : index, item : item});
+					});
+				});	
+
+				Promise.all(promises).then(function(resp){
+					console.log(resp);
+				});
+
+				var p2 = [1, 2, 3, 4].map((item, index) => {
+					return new Promise((resolve, reject) => {
+						reject({index : index, item : item});
+					});
+				});
+
+				Promise.all(promises).then(function(resp){
+					console.log(resp);
+				}).catch(function(arg){
+					
+				});
+			})(this);
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>
